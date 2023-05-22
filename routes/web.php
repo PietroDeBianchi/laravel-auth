@@ -22,8 +22,9 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])
     ->name('admin.')
     ->prefix('admin')
+    // create a group of routes with prefix 'admin/' && in route:list add name admin. to dashboard 'dashboard'-->'admin.dashboard'
     ->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     });
 
 Route::middleware('auth')->group(function () {
