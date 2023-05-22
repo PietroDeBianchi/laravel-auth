@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,8 @@ Route::middleware(['auth', 'verified'])
     // create a group of routes with prefix 'admin/' && in route:list add name admin. to dashboard 'dashboard'-->'admin.dashboard'
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('posts', PostController::class);
     });
 
 Route::middleware('auth')->group(function () {

@@ -20,5 +20,6 @@
         </header>
 
         @yield('content')
+        <p>GUEST</p>
     </body>
 </html>

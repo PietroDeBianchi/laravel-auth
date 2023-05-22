@@ -25,8 +25,12 @@
             @include('partials.header')
         </header>
 
-        <main class="">
-            @yield('content')
+        <main class="admin-main d-flex" id="adminMain">
+            @include('partials.sidebar')
+            <div class="w-75">
+                @yield('content')
+            </div>
+            <p>ADMIN</p>
         </main>
     </div>
 </body>
