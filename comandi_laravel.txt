@@ -1,0 +1,232 @@
+COMANDI TERMINALE LARAVEL
+
+
+//creazione progetto laravel
+
+		composer create-project --prefer-dist laravel/laravel NOME-PROGETTO "9.*" 
+
+// scarica il pacchetto breeze
+
+		composer require laravel/breeze:^1 --dev (:^1 facoltativo)
+
+// installa breeze
+
+	php artisan breeze:install
+
+//download preset con vite e bootstrap
+
+		composer require pacificdev/laravel_9_preset
+
+//scelgi la user interface con bootstrap e scss
+
+		php artisan preset:ui bootstrap --auth
+
+//installa vite
+
+		npm i
+
+//avvia hosting vite
+
+		npm run dev
+
+//avvia hosting laravel
+
+		php artisan serve
+
+//creare classe e file controller
+
+		php artisan make:controller Folder/NomeController  \\ convenzione nome->(PageController)
+
+//creare classe e file controller con pre-impostate le funzioni CRUD e le rotte di gestione per la nostra classe (nel file WEB.PHP)
+
+		php artisan make:controller --resource NomeController  \\ convenzione nome->(PageController)
+
+//crea classe model
+
+		php artisan make:model MyModel (dentro App\Models) \\ crea classe MyModel extends Model
+
+//crea migrazione
+
+		php artisan make:migration create_nome_al_plurale_table \\ convenzione -> create = comando, _nome_al_plurale_, table = dici che è una tabella
+
+//aggiorna migrazione
+		
+		php artisan make:migration update_users_table --table=users \\ convenzione ->update = comando, users indica tabella che vuoi aggiornare
+
+//aggiungi colonna
+
+		php artisan make:migration add_phone_number_to_users_table \\ convenzione -> add = comando, users = tabella
+		
+//esegue migrazioni ancora non eseguite 
+
+		php artisan migrate \\ l'ordine delle migrazioni è tassativo, prima crei poi modifichi tabella
+
+//downgrade migrazione dell ultima esecuzione in blocco
+	
+		php artisan migrate:rollback \\ torni a stato precedente di 1 blocco di migrazioni
+
+//cancella TUTTE le migrazioni (danger)
+		
+		php artisan migrate:reset
+
+//creare file seeder
+
+		php artisan make:seeder UsersTableSeeder \\ andra dentro database/seeds, nome PascalCase, crea classe extends Seeder
+
+//esegui il run() del seeder
+
+		php artisan db:seed --class=NomeClasseSeeder
+
+// esegui nuovo formato di richiesta personalizzato
+
+		php artisan make:request NomeClasseRequest
+
+//lista delle "rotte"
+		
+		php artisan route:list
+
+
+
+// SINGOLARE e PLURALE in LARAVEL
+
+SINGOLARE: nome Classe / PLURALE: nome Tabella, nome Resource URI, nome folder Resources/Views/NomeFolderAlPlurale
+
+
+
+SINTASSI SPECIALI
+
+RIFERIRTI A CONTROLLER NELLA ROUTE
+
+	Route::get('/', [PageController::class, 'index']);
+
+NAMESPACE
+
+	namespace App\Http\Controllers\Guest\NomeClasse as NomeCheDicoIo;
+
+IMG che prende da resources
+
+	<img class="icon" src="{{Vite::asset($icon['icon'])}}">
+
+ROUTE SU HREF
+
+	<a href"{{route('nomeRotta')}}">HOME</a>
+
+LINKARE STYLE E BOOTSTRAP E SCSS
+	
+	@vite('resources/js/app.js');
+
+CAMBIO CLASSE CON TERNARIO
+
+	class="{{Route::currentRouteName() == 'home'?'bg-white':''}}"
+
+LAYOUT extends
+
+	@extends('layouts.app')//path con dot notation
+
+	come mettere la roba al posto del segnaposto fatto prima
+	nel layout?
+
+SEGNAPOSTO
+
+	 @yield('page-title') sull html
+
+SECTION
+	@section('page-title')
+		Home Page//scrivi cosa vuoi
+	@endsection
+
+	altra sintassi a una riga se vuoi mettere solo testo
+	
+	@section('page-title','Home Page title')
+
+	@section('content')
+		<h1>Benvenuto</h1>//puoi mettere codice html
+		<ul>
+			<li>come cuocere pasta</li>
+			<li>come bollireacqua</li>
+		</ul>
+	@endsection
+
+FARE QUERY SU DB DA LARAVEL SU FN CONTROLLER USANDO MODEL
+
+	$books = Book::all(); //books è la tabella su MySQL
+	return view('home', compact('books'));
+
+ACCEDERE ALL OGGETTO BOOK CON FOREACH
+
+	@foreach($books as $book)
+		{{$book->id}} //ricorda che book è un oggetto di una collection
+
+BLOCCA I TIMESTAMPS SUL ->save()
+
+	nella classe Book inserisci
+
+	public $timestamps = false;
+
+
+PUNTARE A UNA TABELLA SU ELOQUENT CHE NON SIA PLURALE
+
+	dentro la classe creata che extends a Model crei proprieta
+	
+	protected $table = 'nome_vero_tabella_database';
+
+CICLO @forelse
+
+	@forelse($movies as $movie) fa IF e FOREACH con ELSE
+		///codice di if con elementi ciclati;
+	@empty
+		//codice di else se $movies fosse vuoto;
+	@endforelse
+
+FILTRARE I DATI
+
+	nella funzione del tuo Controller dove assegni il valore a una classe
+
+	$movies = Movie::where('vote', '>', 9)->where('nationality','italian')-get>();
+
+	per debuggare la query
+
+	$movies = Movie::where('vote', '>', 9)->where('nationality','italian')-toSql>();
+	dd($movies);
+
+	per cercare solo uno specifico elemento che punta all id
+	$movie = Movie::find(4)->get();
+
+	Per trovare il primo elemento con quei criteri
+	$movies = Movie::where('vote', '>', 9)->first();
+
+MIGRAZIONI
+
+	crea tabella con colonne
+
+	public function up(){
+	
+		Schema::create('nomeTabella', function (Blueprint $table){
+
+		$table->string('nome_tabella', 30) //crei tabelle con tipo di dato
+		});
+
+	} 
+	
+	cancella contenuto tabella
+
+	public function down(){
+
+		Schema::drop($nomeTabella)
+	}
+
+CREARE CON CICLO FOR N ESATTO DI ISTANZE CON ATTRIBUTI FAKER
+
+	
+	all interno del run() del seeder // ricorda di importare il Faker -> use Faker\Generator as Faker;
+	
+	for($i = 0; $i < 10; $i++){
+	
+	
+		$house = new House(); //creo nuova istanza House:
+		
+		//vedo sulla documentazione di faker le possibili funzioni
+		$house->room_number = $faker->randomDigitNotNull(); //assegno room_number col faker;
+
+
+	}
