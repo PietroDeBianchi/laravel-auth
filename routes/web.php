@@ -26,8 +26,10 @@ Route::middleware(['auth', 'verified'])
     // create a group of routes with prefix 'admin/' && in route:list add name admin. to dashboard 'dashboard'-->'admin.dashboard'
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
-        Route::resource('posts', PostController::class);
+        Route::resource('posts', PostController::class)->parameters([
+            // posts's URL parameters => PostTable x SlugColumn 
+            'posts' => 'post:slug'
+        ]);
     });
 
 Route::middleware('auth')->group(function () {
